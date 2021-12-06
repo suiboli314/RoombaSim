@@ -1,10 +1,25 @@
 import unittest
 from MazeRoomGen import DungeonRooms
-from BFSAlgo import BFSAlgo
 from Maze import Maze
+from BFSAlgo import BFSAlgo
+from DFSAlgo import DFSAlgo
 
 
 class SolversTest(unittest.TestCase):
+
+    @staticmethod
+    def duplicates_in_solution(solution):
+        """ No cell should appear twice in the same maze solution.
+
+        Args:
+            solution (list): path from start to finish
+        Returns:
+            bool: Does the same cell appear in the solution more than once?
+        """
+        for i in range(len(solution[:-1])):
+            if solution[i] in solution[i + 1:]:
+                return True
+        return False
 
     @staticmethod
     def one_away(cell1, cell2):
@@ -27,21 +42,6 @@ class SolversTest(unittest.TestCase):
         return False
 
     @staticmethod
-    def duplicates_in_solution(solution):
-        """ No cell should appear twice in the same maze solution.
-
-        Args:
-            solution (list): path from start to finish
-        Returns:
-            bool: Does the same cell appear in the solution more than once?
-        """
-        for i in range(len(solution[:-1])):
-            if solution[i] in solution[i + 1:]:
-                return True
-
-        return False
-
-    @staticmethod
     def solution_is_sane(solution):
         """ verify that each cell in a solution path is next to the previous cell
 
@@ -54,16 +54,32 @@ class SolversTest(unittest.TestCase):
 
         for i in range(1, len(solution)):
             if not SolversTest.one_away(solution[i - 1], solution[i]):
+                print("\n{}\nsolution prev {}, curr {}: {}".format(solution, solution[i - 1], i, solution[i]))
                 return False
 
         return True
+
+    @staticmethod
+    def validate_print(maze):
+        """
+        Args:
+            maze (Maze): maze with solution to be validated and printed
+        Returns:
+             None
+        """
+        for sol in maze.solutions:
+            assert SolversTest.one_away(maze.start, sol[1])
+            assert SolversTest.solution_is_sane(sol)
+
+        print("\n1st sol efficiency: {}\nsols: {}\nsteps in algorithm: {}\n{}"
+              .format(len(maze.solutions[0]), maze.solutions, maze.solver.cost, maze))
 
     @staticmethod
     def create_maze_with_varied_entrances(no_end=3):
         """ create a maze with entrances inside/outside
 
         Args:
-            no_end (bool): no_end (int): How many end of the maze?
+            no_end (int): How many end of the maze?
         Returns:
             Maze: a small, test maze grid with entrance and exit initialized
         """
@@ -140,19 +156,18 @@ class SolversTest(unittest.TestCase):
         assert sol == m.solver._prune_solution(sol * 100)
 
     def test_BFS(self):
-        """ test against a maze with outer/inner entrances """
         m = self.create_maze_with_varied_entrances(3)
         m.solver = BFSAlgo()
         m.solve()
 
-        for sol in m.solutions:
-            assert not self.duplicates_in_solution(sol)
-            assert self.one_away(m.start, sol[0])
-            assert self.one_away(m.end, sol[-1])
-            assert self.solution_is_sane(sol)
-        print()
-        print(m)
-        print(m.solutions)
+        SolversTest.validate_print(m)
+
+    def test_DFS(self):
+        m = self.create_maze_with_varied_entrances(3)
+        m.solver = DFSAlgo()
+        m.solve()
+
+        SolversTest.validate_print(m)
 
 
 if __name__ == '__main__':

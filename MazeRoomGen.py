@@ -91,6 +91,7 @@ class DungeonRooms(MazeGenAlgo):
                 self._carve_door(top_left, bottom_right)
             except Exception:
                 # If the user tries to create an invalid room, it is simply ignored.
+                print("skipped room {}".format(room))
                 pass
 
     def _carve_room(self, top_left, bottom_right):

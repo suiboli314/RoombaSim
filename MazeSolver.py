@@ -5,6 +5,10 @@ from numpy.random import shuffle
 class MazeSolver:
     __metaclass__ = abc.ABCMeta
 
+    def __init__(self):
+        # cost of the algorithm
+        self.cost = 0
+
     def solve(self, grid, start, end):
         """ helper method to solve a init the solver before solving the maze
 
@@ -20,6 +24,7 @@ class MazeSolver:
 
     def _solve_preprocessor(self, grid, start, end):
         """ ensure the maze mazes any sense before you solve it
+        work as __init__
 
         Args:
             grid (np.array): maze array

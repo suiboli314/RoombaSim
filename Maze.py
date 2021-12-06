@@ -93,8 +93,6 @@ class Maze:
             'Start and end times must be set first.'
 
         self.solutions = self.solver.solve(self.grid, self.start, self.end)
-        if self.prune:
-            self.solutions = self.solver.prune_solutions(self.solutions)
 
     def tostring(self, entrances=False, solutions=False):
         """ Display the maze entrances/solutions IF they already exist.
@@ -114,6 +112,11 @@ class Maze:
         for row in self.grid:
             txt.append(''.join(['#' if cell else ' ' for cell in row]))
 
+        # if extant, insert the solution path
+        if solutions and self.solutions:
+            for r, c in self.solutions[0]:
+                txt[r] = txt[r][:c] + '+' + txt[r][c + 1:]
+
         # insert the start and end points
         if entrances and self.start and self.end:
             r, c = self.start
@@ -122,11 +125,6 @@ class Maze:
             for end in self.end:
                 r, c = end
                 txt[r] = txt[r][:c] + 'E' + txt[r][c + 1:]
-
-        # if extant, insert the solution path
-        if solutions and self.solutions:
-            for r, c in self.solutions[0]:
-                txt[r] = txt[r][:c] + '+' + txt[r][c + 1:]
 
         return '\n'.join(txt)
 

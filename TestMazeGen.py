@@ -61,7 +61,6 @@ class GeneratorsTest(unittest.TestCase):
         print(m)
 
 
-
 def boundary_is_solid(grid):
     """ Helper method to test of the maze is sane.
     Algorithms should generate a maze with a solid boundary of walls.
@@ -125,34 +124,3 @@ def all_corners_complete(grid):
                 return False
 
     return True
-
-# from math import pi, sin, cos, sqrt
-# import matplotlib.pyplot as plt
-# def GenDriver(maze):
-#     pi_2 = pi / 2
-#
-#     MINX = MINY = 0
-#     MAXX = MAXY = 1
-#     DEFAULT_SIDE = 0.1
-#     DEFAULT_SAFETY_MARGIN = DEFAULT_SIDE * sqrt(2)
-#     __global_generation_counter = 0
-#
-#     def square_to_plot(square):
-#         xs, ys = zip(square[0], square[1], square[2], square[3])
-#         return xs + (xs[0],), ys + (ys[0],)
-#
-#     def generateSquares(maze):
-#         while 1:
-#             restart = False
-#
-#
-#     squares = list()
-#     for i in range(len(maze)):
-#         squares.append(generateSquares(maze))
-#     plot_squares = tuple()
-#     for sq in squares:
-#         plot_squares += square_to_plot(sq)
-#     print("STATS:\n    Squares: {}\n    Generated values: {}".format(len(maze), __global_generation_counter))
-#     plt.plot(*plot_squares)
-#     plt.axis([MINX, MAXX, MINY, MAXY])
-#     plt.show()
