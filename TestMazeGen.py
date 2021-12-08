@@ -51,7 +51,7 @@ class GeneratorsTest(unittest.TestCase):
         """ test DungeonRooms mazes are reasonably when generating some random rooms in a serpentine fashion """
         m = Maze()
         m.generator = DungeonRooms(7, 7,
-                                   rooms=[[(1, 1), (4, 3)], [(2, 6), (3, 4)], [(5, 8), (6, 13)]],
+                                   rooms=[[(1, 1), (4, 3)], [(2, 6), (8, 9)], [(5, 8), (6, 13)]],
                                    hunt_order='serpentine')
         m.generate()
 
@@ -90,7 +90,7 @@ def boundary_is_solid(grid):
 
 def all_passages_open(grid):
     """ Helper method to test of the maze is sane
-    All of the (odd, odd) grid cells in a maze should be passages.
+    All the (odd, odd) grid cells in a maze should be passages.
 
     Args:
         grid (np.array): maze array
@@ -109,12 +109,12 @@ def all_passages_open(grid):
 
 def all_corners_complete(grid):
     """ Helper method to test of the maze is sane
-    All of the (even, even) grid cells in a maze should be walls.
+    All the (even, even) grid cells in a maze should be walls.
 
     Args:
         grid (np.array): maze array
     Returns:
-        boolean: Are all of the grid corners solid?
+        boolean: Are all the grid corners solid?
     """
     H, W = grid.shape
 

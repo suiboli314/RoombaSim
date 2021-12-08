@@ -34,6 +34,18 @@ class Maze:
             import numpy as np
             np.random.seed(seed)
 
+    @staticmethod
+    def get_distance(cell1, cell2):
+        """ Returns manhattan distances between two given cells
+
+        Args:
+            cell1 (tuple): one of two cells
+            cell2 (tuple): the other cell
+        Returns:
+            int: manhattan distances between two cells
+        """
+        return abs(cell1[0] - cell2[0]) + abs(cell1[1] - cell2[1])
+
     def generate(self):
         """ public method to generate a new maze, and handle some clean-up
 
@@ -47,40 +59,43 @@ class Maze:
         self.end = []
         self.solutions = None
 
-    def generate_entrances(self, no_end=3):
+    def generate_entrances(self, no_end=3, at_least_distance=2):
         """ Generate maze entrances. Entrances can be on the walls, or inside the maze.
 
         Args:
             no_end (int): How many end of the maze?
+            at_least_distance (int): start and end doesn't allow within this distance
         Returns:
             None
         """
 
-        while len(self.end) < no_end:
-            # the start and end shouldn't be right next to each other
-            self._generate_inner_entrances()
-
-    def _generate_inner_entrances(self):
-        """ Generate maze entrances, randomly within the maze.
-
-        Returns:
-            None
-        """
         H, W = self.grid.shape
 
+        # Generate a Start
         if not self.start:
-            self.start = (randrange(1, H, 2), randrange(1, W, 2))
+            self.start = (randrange(1, H, at_least_distance), randrange(1, W, at_least_distance))
 
-        end = (randrange(1, H, 2), randrange(1, W, 2))
-        timeout = 20
-        # the start and end shouldn't be right next to each other
-        while abs(self.start[0] - end[0]) + \
-                abs(self.start[1] - end[1]) < 2:
-            end = (randrange(1, H, 2), randrange(1, W, 2))
-            timeout -= 1
-            assert timeout > 0, "_generate_inner_entrances timeout"
+        # cells already used
+        usedCells = set()
+        usedCells.add(self.start)
+        usedCells.update(self.GetNeighbours(self.start, at_least_distance))
 
-        self.end.append(end)
+        for i in range(no_end):
+            timeout = 20
+            while True:
+                # Generate a end
+                end = (randrange(1, H, at_least_distance), randrange(1, W, at_least_distance))
+                # verify end
+                if end not in usedCells:
+                    # valid end, then add it and
+                    # its neighbours into usedCells
+                    usedCells.add(end)
+                    usedCells.update(self.GetNeighbours(end, at_least_distance))
+                    # add valid end to maze, break timeout loop
+                    self.end.append(end)
+                    break
+                # timed out
+                assert timeout > 0, "_generate_inner_entrances timeout"
 
     def solve(self):
         """ public method to solve a new maze, if possible
@@ -143,6 +158,52 @@ class Maze:
             str: string representation of the maze
         """
         return self.__str__()
+
+    def GetNeighbours(self, cell, distance=1):
+        """ Generate a list of valid steps in range
+        of distance around the given cell
+
+        Args:
+            cell (tuple): given cell
+            distance (int): distance of the given cell to the furthest cell
+        Returns:
+            list: valid nearby cells in range
+        """
+        r, c = cell
+        neighbours = []
+        for i in range(1, distance + 1):
+            nearby = (r + i, c)
+            if self.validate_step(nearby):
+                neighbours.append(nearby)
+            nearby = (r - i, c)
+            if self.validate_step(nearby):
+                neighbours.append(nearby)
+            nearby = (r, c + i)
+            if self.validate_step(nearby):
+                neighbours.append(nearby)
+            nearby = (r, c - i)
+            if self.validate_step(nearby):
+                neighbours.append(nearby)
+
+        return neighbours
+
+    def validate_cell(self, cell):
+        """ Validate a given cell is inside maze
+        Args:
+            cell (tuple): cell
+        Returns:
+             bool: returns true if cell is inside maze
+        """
+        return 0 < cell[0] < self.grid.shape[0] and 0 < cell[1] < self.grid.shape[1]
+
+    def validate_step(self, cell):
+        """ Validate a given cell is walkable
+        Args:
+            cell (tuple):
+        Returns:
+             bool: returns true if cell is not obstacle inside maze
+        """
+        return self.validate_cell(cell) and not self.grid[cell[0]][cell[1]]
 
     # def transmute(self):
     #     """ Transmute an existing maze grid

@@ -29,7 +29,10 @@ class AStarAlgo(MazeSolver):
         sol = []
 
         tmp = self.start
-        for end in self.end:
+        heap = AStarAlgo.UpdateHeap(tmp, self.end)
+
+        while len(heap) != 0:
+            end = heappop(heap)[1]
             cost, tmpSol = self._AStar(tmp, end)
             # store current end, use it as start for the next route
             tmp = end
@@ -40,8 +43,28 @@ class AStarAlgo(MazeSolver):
             # append current path to final solution
             sol += tmpSol
 
+            heap = AStarAlgo.UpdateHeap(tmp, [row[1] for row in heap])
+
         sol.append(tmp)
+
         return [sol]
+
+    @staticmethod
+    def UpdateHeap(start, ends):
+        """
+        Args:
+            start (tuple): start cell to calculate distance
+            ends (list): list of ends
+        Return:
+            heap: heapified list
+        """
+        heap = []
+        heapify(heap)
+        for end in ends:
+            node = (AStarAlgo._get_distance(start, end), end)
+            heappush(heap, node)
+
+        return heap
 
     def _AStar(self, start, end):
         """ A* search solutions to the maze
@@ -53,7 +76,6 @@ class AStarAlgo(MazeSolver):
             int, list: the number of explored cells, valid maze solutions
         """
         counter = 0
-
         # dict: {cell, path}
         visited = {}
 
