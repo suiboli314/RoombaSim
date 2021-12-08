@@ -203,9 +203,9 @@ class TestSolver(unittest.TestCase):
             costTable.append(TestSolver.test_a_maze())
             no_of_test -= 1
 
-        print()
-        for row in costTable:
-            print(row)
+        # print()
+        # for row in costTable:
+        #     print(row)
 
         return costTable
 
