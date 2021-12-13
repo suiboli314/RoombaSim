@@ -7,16 +7,9 @@ if not compiled:
 
 
 class DFSAlgo(MazeSolver):
-    """ The Algorithm
+    """ Search the deepest nodes in the search tree first.
 
-    1) create a solution for each starting position
-    2) loop through each solution, and find the neighbors of the last element
-    3) a solution reaches the end or a dead end when we mark it by appending a None.
-    4) clean-up solutions
-
-    Results
-
-    Find all unique solutions. Works against imperfect mazes.
+    Caveat: Solutions is a list but currently have only one solution.
     """
 
     def _solve(self):
@@ -54,7 +47,7 @@ class DFSAlgo(MazeSolver):
         counter = 0
 
         # maintain a stack of paths
-        stack = deque([start])
+        stack = deque()
         # visited cells
         visited = set()
 

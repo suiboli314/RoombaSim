@@ -15,7 +15,7 @@ class MazeSolver:
         Args:
             grid (np.array): maze array
             start (tuple): position in maze to start from
-            end (tuple): position in maze to finish at
+            end (list): position in maze to finish at
         Returns:
             list: final solutions
         """
@@ -29,7 +29,7 @@ class MazeSolver:
         Args:
             grid (np.array): maze array
             start (tuple): position in maze to start from
-            end (tuple): position in maze to finish at
+            end (list): position in maze to finish at
         Returns: None
         """
         self.grid = grid.copy()

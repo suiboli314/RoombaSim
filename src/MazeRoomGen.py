@@ -1,8 +1,8 @@
+""" Thanks to @john-science John Stilley open source mazelib """
 from random import choice, randrange, shuffle
 import numpy as np
 # If the code is not Cython-compiled, we need to add some imports.
 from cython import compiled
-
 if not compiled:
     from MazeGenAlgo import MazeGenAlgo
 
